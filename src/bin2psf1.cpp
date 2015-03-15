@@ -50,6 +50,8 @@ void printUsage(const char *cmd)
 {
 	const char *availableOptions[] = {
 		"--help", "Show this help",
+		"-o filename", "Specify output filename",
+		"-r name", "Region (North America, Japan or Europe)",
 	};
 
 	printf("%s %s\n", APP_NAME, APP_VER);
@@ -174,6 +176,22 @@ int main(int argc, char **argv)
 		if (strcmp(argv[argi], "--help") == 0) {
 			printUsage(argv[0]);
 			return EXIT_SUCCESS;
+		}
+		else if (strcmp(argv[argi], "-o") == 0 || strcmp(argv[argi], "--out-filename") == 0) {
+			if (argi + 1 >= argc) {
+				fprintf(stderr, "Error: Too few arguments for \"%s\".\n", argv[argi]);
+				return EXIT_FAILURE;
+			}
+			strcpy(psf_path, argv[argi + 1]);
+			argi++;
+		}
+		else if (strcmp(argv[argi], "-r") == 0 || strcmp(argv[argi], "--region") == 0) {
+			if (argi + 1 >= argc) {
+				fprintf(stderr, "Error: Too few arguments for \"%s\".\n", argv[argi]);
+				return EXIT_FAILURE;
+			}
+			strcpy(region, argv[argi + 1]);
+			argi++;
 		}
 		else {
 			fprintf(stderr, "Error: Unknown option \"%s\"\n", argv[argi]);

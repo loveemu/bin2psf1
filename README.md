@@ -20,3 +20,9 @@ Note: Padding bytes will be added unless input file size is a multiple of 2048 b
 
 --help
   : Show help
+
+-o, --out-filename filename
+  : Specify output filename
+
+-r, --region name
+  : Region (North America, Japan or Europe)
