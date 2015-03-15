@@ -148,7 +148,11 @@ bool bin2psf1(const char * bin_path, const char * psf_path, uint32_t load_addres
 
 	// Write to PSF1 file
 	ZlibWriter exe_z(Z_BEST_COMPRESSION);
-	exe_z.write(exe, PSF_EXE_HEADER_SIZE + load_size);
+	if (exe_z.write(exe, PSF_EXE_HEADER_SIZE + load_size) != PSF_EXE_HEADER_SIZE + load_size) {
+		fprintf(stderr, "Error: Zlib compress error \"%s\"\n", psf_path);
+		delete[] exe;
+		return false;
+	}
 	if (!PSFFile::save(psf_path, PSF1_PSF_VERSION, NULL, 0, exe_z, tags)) {
 		fprintf(stderr, "Error: File write error \"%s\"\n", psf_path);
 		delete[] exe;
