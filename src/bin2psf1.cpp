@@ -3,7 +3,7 @@
  */
 
 #define APP_NAME    "bin2psf1"
-#define APP_VER     "[2015-03-15]"
+#define APP_VER     "[2015-04-12]"
 #define APP_DESC	"Convert binary file into a PSF1 format"
 #define APP_AUTHOR	"loveemu <http://github.com/loveemu/bin2psf1>"
 

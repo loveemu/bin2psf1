@@ -263,7 +263,17 @@ PSFFile * PSFFile::load(const std::string& filename)
 	return psf;
 }
 
-bool PSFFile::save(const std::string& filename, uint8_t version, uint8_t * reserved, uint32_t reserved_size, const ZlibWriter& exe, std::map<std::string, std::string> tags)
+bool PSFFile::save(const std::string& filename)
+{
+	return save(filename, version, reserved.data(), (uint32_t)reserved.size(), compressed_exe.compressed_data(), (uint32_t)compressed_exe.compressed_size(), tags);
+}
+
+bool PSFFile::save(const std::string& filename, uint8_t version, const uint8_t * reserved, uint32_t reserved_size, const ZlibWriter& exe, std::map<std::string, std::string> tags)
+{
+	return save(filename, version, reserved, reserved_size, exe.data(), (uint32_t)exe.size(), tags);
+}
+
+bool PSFFile::save(const std::string& filename, uint8_t version, const uint8_t * reserved, uint32_t reserved_size, const uint8_t * compressed_exe, uint32_t compressed_exe_size, std::map<std::string, std::string> tags)
 {
 	uint8_t data[4];
 
@@ -299,11 +309,10 @@ bool PSFFile::save(const std::string& filename, uint8_t version, uint8_t * reser
 	}
 
 	// size of program area
-	uint32_t exe_size = (uint32_t) exe.size();
-	data[0] = exe_size & 0xff;
-	data[1] = (exe_size >> 8) & 0xff;
-	data[2] = (exe_size >> 16) & 0xff;
-	data[3] = (exe_size >> 24) & 0xff;
+	data[0] = compressed_exe_size & 0xff;
+	data[1] = (compressed_exe_size >> 8) & 0xff;
+	data[2] = (compressed_exe_size >> 16) & 0xff;
+	data[3] = (compressed_exe_size >> 24) & 0xff;
 	if (fwrite(data, 1, 4, fp) != 4)
 	{
 		fclose(fp);
@@ -311,7 +320,7 @@ bool PSFFile::save(const std::string& filename, uint8_t version, uint8_t * reser
 	}
 
 	// crc32 of program area
-	uint32_t exe_crc = exe.crc32();
+	uint32_t exe_crc = (compressed_exe != NULL) ? crc32(0L, compressed_exe, compressed_exe_size) : 0;
 	data[0] = exe_crc & 0xff;
 	data[1] = (exe_crc >> 8) & 0xff;
 	data[2] = (exe_crc >> 16) & 0xff;
@@ -323,17 +332,23 @@ bool PSFFile::save(const std::string& filename, uint8_t version, uint8_t * reser
 	}
 
 	// reserved area
-	if (fwrite(reserved, 1, reserved_size, fp) != reserved_size)
+	if (reserved != NULL && reserved_size != 0)
 	{
-		fclose(fp);
-		return false;
+		if (fwrite(reserved, 1, reserved_size, fp) != reserved_size)
+		{
+			fclose(fp);
+			return false;
+		}
 	}
 
 	// program area
-	if (fwrite(exe.data(), 1, exe_size, fp) != exe_size)
+	if (compressed_exe != NULL && compressed_exe_size != 0)
 	{
-		fclose(fp);
-		return false;
+		if (fwrite(compressed_exe, 1, compressed_exe_size, fp) != compressed_exe_size)
+		{
+			fclose(fp);
+			return false;
+		}
 	}
 
 	// tags
@@ -364,5 +379,6 @@ bool PSFFile::save(const std::string& filename, uint8_t version, uint8_t * reser
 		}
 	}
 
+	fclose(fp);
 	return true;
 }
