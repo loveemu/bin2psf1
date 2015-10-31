@@ -21,18 +21,30 @@
     <ClInclude Include="cpath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="nds2sf.h">
+    <ClInclude Include="bin2psf1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bin2psf1.h">
+    <ClInclude Include="PSFFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZlibReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZlibWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="nds2sf.cpp">
+    <ClCompile Include="bin2psf1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bin2psf1.cpp">
+    <ClCompile Include="PSFFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZlibReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZlibWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
