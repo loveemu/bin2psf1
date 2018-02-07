@@ -36,7 +36,7 @@ after_build:
   - ps: $env:gitrev = git describe --tags
   - ps: $env:my_version = "$env:gitrev"
   - set package_name=bin2psf1-%my_version%-%arch%
-  - copy build\%config%\bin2psf1.exe .
+  - copy "build\%config%\bin2psf1.exe" .
   - 7z a %package_name%.zip bin2psf1.exe README.md LICENSE
 
 artifacts:
